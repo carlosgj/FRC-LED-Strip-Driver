@@ -10991,10 +10991,10 @@ Source: www.kingbright.com</description>
 <part name="X1" library="con-panduit" deviceset="057-010-" device="1"/>
 <part name="SUPPLY1" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY2" library="supply2" deviceset="+5V" device=""/>
-<part name="JP1" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
-<part name="JP2" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
-<part name="JP3" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
-<part name="JP4" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
+<part name="CS0" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
+<part name="CS1" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
+<part name="CS2" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
+<part name="CS3" library="SparkFun-Jumpers" deviceset="JUMPER-SMT_2_NO" device="_SILK"/>
 <part name="Q1" library="crystal" deviceset="CRYSTAL" device="HC49S"/>
 <part name="C1" library="resistor" deviceset="C-EU" device="C1206"/>
 <part name="C2" library="resistor" deviceset="C-EU" device="C1206"/>
@@ -11020,6 +11020,9 @@ Source: www.kingbright.com</description>
 <part name="R2" library="resistor" deviceset="R-US_" device="R1206"/>
 <part name="SUPPLY14" library="supply2" deviceset="GND" device=""/>
 <part name="SUPPLY15" library="supply2" deviceset="+5V" device=""/>
+<part name="SUPPLY16" library="supply2" deviceset="+5V" device=""/>
+<part name="SUPPLY17" library="supply2" deviceset="GND" device=""/>
+<part name="C3" library="resistor" deviceset="C-EU" device="C1206"/>
 </parts>
 <sheets>
 <sheet>
@@ -11038,10 +11041,10 @@ Source: www.kingbright.com</description>
 <instance part="X1" gate="-10" x="119.38" y="53.34"/>
 <instance part="SUPPLY1" gate="GND" x="35.56" y="116.84"/>
 <instance part="SUPPLY2" gate="+5V" x="58.42" y="111.76"/>
-<instance part="JP1" gate="G$1" x="109.22" y="83.82"/>
-<instance part="JP2" gate="G$1" x="109.22" y="73.66"/>
-<instance part="JP3" gate="G$1" x="109.22" y="63.5"/>
-<instance part="JP4" gate="G$1" x="109.22" y="53.34"/>
+<instance part="CS0" gate="G$1" x="109.22" y="83.82"/>
+<instance part="CS1" gate="G$1" x="109.22" y="73.66"/>
+<instance part="CS2" gate="G$1" x="109.22" y="63.5"/>
+<instance part="CS3" gate="G$1" x="109.22" y="53.34"/>
 <instance part="Q1" gate="G$1" x="76.2" y="60.96" rot="R90"/>
 <instance part="C1" gate="G$1" x="76.2" y="55.88"/>
 <instance part="C2" gate="G$1" x="83.82" y="55.88"/>
@@ -11068,6 +11071,9 @@ Source: www.kingbright.com</description>
 <instance part="R2" gate="G$1" x="-12.7" y="22.86" rot="R90"/>
 <instance part="SUPPLY14" gate="GND" x="-12.7" y="15.24"/>
 <instance part="SUPPLY15" gate="+5V" x="-12.7" y="38.1"/>
+<instance part="SUPPLY16" gate="+5V" x="10.16" y="83.82"/>
+<instance part="SUPPLY17" gate="GND" x="10.16" y="71.12"/>
+<instance part="C3" gate="G$1" x="10.16" y="78.74"/>
 </instances>
 <busses>
 </busses>
@@ -11103,6 +11109,10 @@ Source: www.kingbright.com</description>
 <pinref part="R2" gate="G$1" pin="1"/>
 <pinref part="SUPPLY14" gate="GND" pin="GND"/>
 </segment>
+<segment>
+<pinref part="SUPPLY17" gate="GND" pin="GND"/>
+<pinref part="C3" gate="G$1" pin="2"/>
+</segment>
 </net>
 <net name="+5V" class="0">
 <segment>
@@ -11123,6 +11133,10 @@ Source: www.kingbright.com</description>
 <segment>
 <pinref part="LED2" gate="G$1" pin="A"/>
 <pinref part="SUPPLY15" gate="+5V" pin="+5V"/>
+</segment>
+<segment>
+<pinref part="SUPPLY16" gate="+5V" pin="+5V"/>
+<pinref part="C3" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -11145,13 +11159,13 @@ Source: www.kingbright.com</description>
 </net>
 <net name="N$4" class="0">
 <segment>
-<pinref part="JP1" gate="G$1" pin="1"/>
-<pinref part="JP2" gate="G$1" pin="1"/>
+<pinref part="CS0" gate="G$1" pin="1"/>
+<pinref part="CS1" gate="G$1" pin="1"/>
 <wire x1="104.14" y1="83.82" x2="104.14" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="JP3" gate="G$1" pin="1"/>
+<pinref part="CS2" gate="G$1" pin="1"/>
 <wire x1="104.14" y1="73.66" x2="104.14" y2="63.5" width="0.1524" layer="91"/>
 <junction x="104.14" y="73.66"/>
-<pinref part="JP4" gate="G$1" pin="1"/>
+<pinref part="CS3" gate="G$1" pin="1"/>
 <wire x1="104.14" y1="63.5" x2="104.14" y2="53.34" width="0.1524" layer="91"/>
 <junction x="104.14" y="63.5"/>
 <pinref part="IC1" gate="G$1" pin="RB5"/>
@@ -11162,25 +11176,25 @@ Source: www.kingbright.com</description>
 </net>
 <net name="N$5" class="0">
 <segment>
-<pinref part="JP1" gate="G$1" pin="2"/>
+<pinref part="CS0" gate="G$1" pin="2"/>
 <pinref part="X1" gate="-2" pin="S"/>
 </segment>
 </net>
 <net name="N$6" class="0">
 <segment>
-<pinref part="JP2" gate="G$1" pin="2"/>
+<pinref part="CS1" gate="G$1" pin="2"/>
 <pinref part="X1" gate="-4" pin="S"/>
 </segment>
 </net>
 <net name="N$7" class="0">
 <segment>
-<pinref part="JP3" gate="G$1" pin="2"/>
+<pinref part="CS2" gate="G$1" pin="2"/>
 <pinref part="X1" gate="-8" pin="S"/>
 </segment>
 </net>
 <net name="N$8" class="0">
 <segment>
-<pinref part="JP4" gate="G$1" pin="2"/>
+<pinref part="CS3" gate="G$1" pin="2"/>
 <pinref part="X1" gate="-10" pin="S"/>
 </segment>
 </net>

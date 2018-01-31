@@ -7412,6 +7412,9 @@ Grid 5.00 mm&lt;p&gt;
 <sheets>
 <sheet>
 <plain>
+<text x="-27.178" y="112.522" size="1.778" layer="97">Green</text>
+<text x="-34.798" y="108.712" size="1.778" layer="97">Red</text>
+<text x="-29.718" y="104.648" size="1.778" layer="97">Blue</text>
 </plain>
 <instances>
 <instance part="IC1" gate="G$1" x="45.72" y="68.58"/>

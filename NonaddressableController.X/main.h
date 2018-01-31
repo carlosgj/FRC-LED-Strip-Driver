@@ -14,6 +14,8 @@
 
 #define _XTAL_FREQ (32e6)
 
+#define TMR0_INIT_VALUE 200
+
 unsigned char J2_Red = 0;
 unsigned char J2_Green = 0;
 unsigned char J2_Blue = 0;

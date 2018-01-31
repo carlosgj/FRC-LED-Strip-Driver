@@ -3746,7 +3746,7 @@ extern unsigned char __resetbits;
 extern __bit __powerdown;
 extern __bit __timeout;
 
-# 17 "main.h"
+# 19 "main.h"
 unsigned char J2_Red = 0;
 unsigned char J2_Green = 0;
 unsigned char J2_Blue = 0;
@@ -3767,6 +3767,7 @@ void processSPIByte(unsigned char theByte);
 # 31 "main.c"
 unsigned char processByteFlag = (0);
 unsigned char byteToProcess = 0;
+unsigned char currentPWMOffset = 0;
 
 void main(void) {
 init();
@@ -3798,6 +3799,12 @@ TRISBbits.TRISB0 = (0);
 LATBbits.LATB0 = (0);
 
 SPIinit();
+
+OPTION_REGbits.TMR0CS = 0;
+OPTION_REGbits.PSA = 0;
+OPTION_REGbits.PS = 0b110;
+INTCONbits.TMR0IE = (1);
+
 INTCONbits.GIE == (1);
 }
 
@@ -3813,5 +3820,18 @@ if(PIR1bits.SSP1IF){
 processByteFlag = (1);
 byteToProcess = SSP1BUF;
 PIR1bits.SSP1IF = (0);
+}
+if(INTCONbits.TMR0IF){
+LATAbits.LATA1 = (J2_Red > currentPWMOffset);
+LATAbits.LATA0 = (J2_Green > currentPWMOffset);
+LATAbits.LATA2 = (J2_Blue > currentPWMOffset);
+
+LATAbits.LATA4 = (J3_Red > currentPWMOffset);
+LATAbits.LATA3 = (J3_Green > currentPWMOffset);
+LATBbits.LATB0 = (J3_Blue > currentPWMOffset);
+
+currentPWMOffset++;
+
+INTCONbits.TMR0IF = (0);
 }
 }

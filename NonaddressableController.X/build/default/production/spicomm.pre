@@ -3721,7 +3721,7 @@ extern unsigned char __resetbits;
 extern __bit __powerdown;
 extern __bit __timeout;
 
-# 17 "main.h"
+# 19 "main.h"
 unsigned char J2_Red = 0;
 unsigned char J2_Green = 0;
 unsigned char J2_Blue = 0;

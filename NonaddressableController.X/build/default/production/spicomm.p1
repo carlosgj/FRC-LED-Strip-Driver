@@ -2772,45 +2772,45 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;pic.h: 192: extern unsigned char __resetbits;
 [; ;pic.h: 193: extern __bit __powerdown;
 [; ;pic.h: 194: extern __bit __timeout;
-"17 main.h
+"19 main.h
 [v _J2_Red `uc ~T0 @X0 1 e ]
 [i _J2_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 17: unsigned char J2_Red = 0;
-"18
+[; ;main.h: 19: unsigned char J2_Red = 0;
+"20
 [v _J2_Green `uc ~T0 @X0 1 e ]
 [i _J2_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 18: unsigned char J2_Green = 0;
-"19
+[; ;main.h: 20: unsigned char J2_Green = 0;
+"21
 [v _J2_Blue `uc ~T0 @X0 1 e ]
 [i _J2_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 19: unsigned char J2_Blue = 0;
-"21
+[; ;main.h: 21: unsigned char J2_Blue = 0;
+"23
 [v _J3_Red `uc ~T0 @X0 1 e ]
 [i _J3_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 21: unsigned char J3_Red = 0;
-"22
+[; ;main.h: 23: unsigned char J3_Red = 0;
+"24
 [v _J3_Green `uc ~T0 @X0 1 e ]
 [i _J3_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 22: unsigned char J3_Green = 0;
-"23
+[; ;main.h: 24: unsigned char J3_Green = 0;
+"25
 [v _J3_Blue `uc ~T0 @X0 1 e ]
 [i _J3_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 23: unsigned char J3_Blue = 0;
-[; ;main.h: 25: void init(void);
-[; ;main.h: 26: void run(void);
-[; ;main.h: 27: void interrupt ISR(void);
+[; ;main.h: 25: unsigned char J3_Blue = 0;
+[; ;main.h: 27: void init(void);
+[; ;main.h: 28: void run(void);
+[; ;main.h: 29: void interrupt ISR(void);
 "9 spicomm.h
 [v _SPIcomm_mode `uc ~T0 @X0 1 e ]
 [i _SPIcomm_mode

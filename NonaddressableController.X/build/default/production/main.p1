@@ -1,8 +1,8 @@
 Version 3.2 HI-TECH Software Intermediate Code
 [p mainexit ]
-"25 main.h
+"27 main.h
 [v _init `(v ~T0 @X0 0 ef ]
-"26
+"28
 [v _run `(v ~T0 @X0 0 ef ]
 "341 C:\Program Files (x86)\Microchip\xc8\v1.40\include\pic16f1827.h
 [s S26 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -60,7 +60,18 @@ Version 3.2 HI-TECH Software Intermediate Code
 [v _LATBbits `VS106 ~T0 @X0 0 e@269 ]
 "10 spicomm.h
 [v _SPIinit `(v ~T0 @X0 0 ef ]
-"11
+"1421 C:\Program Files (x86)\Microchip\xc8\v1.40\include\pic16f1827.h
+[s S78 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S78 . PS0 PS1 PS2 PSA TMR0SE TMR0CS INTEDG nWPUEN ]
+"1431
+[s S79 :3 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S79 . PS . T0SE T0CS ]
+"1420
+[u S77 `S78 1 `S79 1 ]
+[n S77 . . . ]
+"1438
+[v _OPTION_REGbits `VS77 ~T0 @X0 0 e@149 ]
+"11 spicomm.h
 [v _processSPIByte `(v ~T0 @X0 0 ef1`uc ]
 "540 C:\Program Files (x86)\Microchip\xc8\v1.40\include\pic16f1827.h
 [s S33 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -2856,45 +2867,45 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;pic.h: 192: extern unsigned char __resetbits;
 [; ;pic.h: 193: extern __bit __powerdown;
 [; ;pic.h: 194: extern __bit __timeout;
-"17 main.h
+"19 main.h
 [v _J2_Red `uc ~T0 @X0 1 e ]
 [i _J2_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 17: unsigned char J2_Red = 0;
-"18
+[; ;main.h: 19: unsigned char J2_Red = 0;
+"20
 [v _J2_Green `uc ~T0 @X0 1 e ]
 [i _J2_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 18: unsigned char J2_Green = 0;
-"19
+[; ;main.h: 20: unsigned char J2_Green = 0;
+"21
 [v _J2_Blue `uc ~T0 @X0 1 e ]
 [i _J2_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 19: unsigned char J2_Blue = 0;
-"21
+[; ;main.h: 21: unsigned char J2_Blue = 0;
+"23
 [v _J3_Red `uc ~T0 @X0 1 e ]
 [i _J3_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 21: unsigned char J3_Red = 0;
-"22
+[; ;main.h: 23: unsigned char J3_Red = 0;
+"24
 [v _J3_Green `uc ~T0 @X0 1 e ]
 [i _J3_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 22: unsigned char J3_Green = 0;
-"23
+[; ;main.h: 24: unsigned char J3_Green = 0;
+"25
 [v _J3_Blue `uc ~T0 @X0 1 e ]
 [i _J3_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 23: unsigned char J3_Blue = 0;
-[; ;main.h: 25: void init(void);
-[; ;main.h: 26: void run(void);
-[; ;main.h: 27: void interrupt ISR(void);
+[; ;main.h: 25: unsigned char J3_Blue = 0;
+[; ;main.h: 27: void init(void);
+[; ;main.h: 28: void run(void);
+[; ;main.h: 29: void interrupt ISR(void);
 "9 spicomm.h
 [v _SPIcomm_mode `uc ~T0 @X0 1 e ]
 [i _SPIcomm_mode
@@ -2915,143 +2926,193 @@ Version 3.2 HI-TECH Software Intermediate Code
 -> -> 0 `i `uc
 ]
 [; ;main.c: 32: unsigned char byteToProcess = 0;
-"34
+"33
+[v _currentPWMOffset `uc ~T0 @X0 1 e ]
+[i _currentPWMOffset
+-> -> 0 `i `uc
+]
+[; ;main.c: 33: unsigned char currentPWMOffset = 0;
+"35
 [v _main `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 34: void main(void) {
+[; ;main.c: 35: void main(void) {
 [e :U _main ]
 [f ]
-[; ;main.c: 35: init();
-"35
-[e ( _init ..  ]
-[; ;main.c: 36: while((1)){
+[; ;main.c: 36: init();
 "36
+[e ( _init ..  ]
+[; ;main.c: 37: while((1)){
+"37
 [e :U 351 ]
 {
-[; ;main.c: 37: run();
-"37
-[e ( _run ..  ]
+[; ;main.c: 38: run();
 "38
+[e ( _run ..  ]
+"39
 }
 [e :U 350 ]
-"36
+"37
 [e $U 351  ]
 [e :U 352 ]
-[; ;main.c: 38: }
 [; ;main.c: 39: }
-"39
+[; ;main.c: 40: }
+"40
 [e :UE 349 ]
 }
-"41
+"42
 [v _init `(v ~T0 @X0 1 ef ]
 {
-[; ;main.c: 41: void init(void){
+[; ;main.c: 42: void init(void){
 [e :U _init ]
 [f ]
-[; ;main.c: 42: INTCONbits.GIE == (0);
-"42
+[; ;main.c: 43: INTCONbits.GIE == (0);
+"43
 [e == -> . . _INTCONbits 0 7 `i -> 0 `i ]
-[; ;main.c: 44: OSCCONbits.IRCF = 0b1110;
-"44
+[; ;main.c: 45: OSCCONbits.IRCF = 0b1110;
+"45
 [e = . . _OSCCONbits 1 2 -> -> 14 `i `uc ]
-[; ;main.c: 47: INTCONbits.PEIE = (1);
-"47
+[; ;main.c: 48: INTCONbits.PEIE = (1);
+"48
 [e = . . _INTCONbits 0 6 -> -> 1 `i `uc ]
-[; ;main.c: 49: TRISAbits.TRISA1 = (0);
-"49
-[e = . . _TRISAbits 0 1 -> -> 0 `i `uc ]
-[; ;main.c: 50: LATAbits.LATA1 = (0);
+[; ;main.c: 50: TRISAbits.TRISA1 = (0);
 "50
-[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
-[; ;main.c: 51: TRISAbits.TRISA0 = (0);
+[e = . . _TRISAbits 0 1 -> -> 0 `i `uc ]
+[; ;main.c: 51: LATAbits.LATA1 = (0);
 "51
-[e = . . _TRISAbits 0 0 -> -> 0 `i `uc ]
-[; ;main.c: 52: LATAbits.LATA0 = (0);
+[e = . . _LATAbits 0 1 -> -> 0 `i `uc ]
+[; ;main.c: 52: TRISAbits.TRISA0 = (0);
 "52
-[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
-[; ;main.c: 53: TRISAbits.TRISA2 = (0);
+[e = . . _TRISAbits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 53: LATAbits.LATA0 = (0);
 "53
-[e = . . _TRISAbits 0 2 -> -> 0 `i `uc ]
-[; ;main.c: 54: LATAbits.LATA2 = (0);
+[e = . . _LATAbits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 54: TRISAbits.TRISA2 = (0);
 "54
+[e = . . _TRISAbits 0 2 -> -> 0 `i `uc ]
+[; ;main.c: 55: LATAbits.LATA2 = (0);
+"55
 [e = . . _LATAbits 0 2 -> -> 0 `i `uc ]
-[; ;main.c: 56: TRISAbits.TRISA4 = (0);
-"56
-[e = . . _TRISAbits 0 4 -> -> 0 `i `uc ]
-[; ;main.c: 57: LATAbits.LATA4 = (0);
+[; ;main.c: 57: TRISAbits.TRISA4 = (0);
 "57
-[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
-[; ;main.c: 58: TRISAbits.TRISA3 = (0);
+[e = . . _TRISAbits 0 4 -> -> 0 `i `uc ]
+[; ;main.c: 58: LATAbits.LATA4 = (0);
 "58
-[e = . . _TRISAbits 0 3 -> -> 0 `i `uc ]
-[; ;main.c: 59: LATAbits.LATA3 = (0);
+[e = . . _LATAbits 0 4 -> -> 0 `i `uc ]
+[; ;main.c: 59: TRISAbits.TRISA3 = (0);
 "59
-[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
-[; ;main.c: 60: TRISBbits.TRISB0 = (0);
+[e = . . _TRISAbits 0 3 -> -> 0 `i `uc ]
+[; ;main.c: 60: LATAbits.LATA3 = (0);
 "60
-[e = . . _TRISBbits 0 0 -> -> 0 `i `uc ]
-[; ;main.c: 61: LATBbits.LATB0 = (0);
+[e = . . _LATAbits 0 3 -> -> 0 `i `uc ]
+[; ;main.c: 61: TRISBbits.TRISB0 = (0);
 "61
+[e = . . _TRISBbits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 62: LATBbits.LATB0 = (0);
+"62
 [e = . . _LATBbits 0 0 -> -> 0 `i `uc ]
-[; ;main.c: 63: SPIinit();
-"63
-[e ( _SPIinit ..  ]
-[; ;main.c: 64: INTCONbits.GIE == (1);
+[; ;main.c: 64: SPIinit();
 "64
-[e == -> . . _INTCONbits 0 7 `i -> 1 `i ]
-[; ;main.c: 65: }
-"65
-[e :UE 353 ]
-}
+[e ( _SPIinit ..  ]
+[; ;main.c: 66: OPTION_REGbits.TMR0CS = 0;
+"66
+[e = . . _OPTION_REGbits 0 5 -> -> 0 `i `uc ]
+[; ;main.c: 67: OPTION_REGbits.PSA = 0;
 "67
-[v _run `(v ~T0 @X0 1 ef ]
-{
-[; ;main.c: 67: void run(void){
-[e :U _run ]
-[f ]
-[; ;main.c: 68: if(processByteFlag){
+[e = . . _OPTION_REGbits 0 3 -> -> 0 `i `uc ]
+[; ;main.c: 68: OPTION_REGbits.PS = 0b110;
 "68
-[e $ ! != -> _processByteFlag `i -> -> -> 0 `i `uc `i 355  ]
-{
-[; ;main.c: 69: processSPIByte(byteToProcess);
+[e = . . _OPTION_REGbits 1 0 -> -> 6 `i `uc ]
+[; ;main.c: 69: INTCONbits.TMR0IE = (1);
 "69
-[e ( _processSPIByte (1 _byteToProcess ]
-[; ;main.c: 70: processByteFlag = (0);
-"70
-[e = _processByteFlag -> -> 0 `i `uc ]
+[e = . . _INTCONbits 0 5 -> -> 1 `i `uc ]
+[; ;main.c: 71: INTCONbits.GIE == (1);
 "71
-}
-[e :U 355 ]
-[; ;main.c: 71: }
+[e == -> . . _INTCONbits 0 7 `i -> 1 `i ]
 [; ;main.c: 72: }
 "72
+[e :UE 353 ]
+}
+"74
+[v _run `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 74: void run(void){
+[e :U _run ]
+[f ]
+[; ;main.c: 75: if(processByteFlag){
+"75
+[e $ ! != -> _processByteFlag `i -> -> -> 0 `i `uc `i 355  ]
+{
+[; ;main.c: 76: processSPIByte(byteToProcess);
+"76
+[e ( _processSPIByte (1 _byteToProcess ]
+[; ;main.c: 77: processByteFlag = (0);
+"77
+[e = _processByteFlag -> -> 0 `i `uc ]
+"78
+}
+[e :U 355 ]
+[; ;main.c: 78: }
+[; ;main.c: 79: }
+"79
 [e :UE 354 ]
 }
 [v F2786 `(v ~T0 @X0 1 tf ]
-"74
+"81
 [v _ISR `IF2786 ~T0 @X0 1 e ]
 {
-[; ;main.c: 74: void interrupt ISR(void){
+[; ;main.c: 81: void interrupt ISR(void){
 [e :U _ISR ]
 [f ]
-[; ;main.c: 75: if(PIR1bits.SSP1IF){
-"75
+[; ;main.c: 82: if(PIR1bits.SSP1IF){
+"82
 [e $ ! != -> . . _PIR1bits 0 3 `i -> -> -> 0 `i `Vuc `i 357  ]
 {
-[; ;main.c: 76: processByteFlag = (1);
-"76
+[; ;main.c: 83: processByteFlag = (1);
+"83
 [e = _processByteFlag -> -> 1 `i `uc ]
-[; ;main.c: 77: byteToProcess = SSP1BUF;
-"77
+[; ;main.c: 84: byteToProcess = SSP1BUF;
+"84
 [e = _byteToProcess _SSP1BUF ]
-[; ;main.c: 78: PIR1bits.SSP1IF = (0);
-"78
+[; ;main.c: 85: PIR1bits.SSP1IF = (0);
+"85
 [e = . . _PIR1bits 0 3 -> -> 0 `i `uc ]
-"79
+"86
 }
 [e :U 357 ]
-[; ;main.c: 79: }
-[; ;main.c: 80: }
-"80
+[; ;main.c: 86: }
+[; ;main.c: 87: if(INTCONbits.TMR0IF){
+"87
+[e $ ! != -> . . _INTCONbits 0 2 `i -> -> -> 0 `i `Vuc `i 358  ]
+{
+[; ;main.c: 88: LATAbits.LATA1 = (J2_Red > currentPWMOffset);
+"88
+[e = . . _LATAbits 0 1 -> -> > -> _J2_Red `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 89: LATAbits.LATA0 = (J2_Green > currentPWMOffset);
+"89
+[e = . . _LATAbits 0 0 -> -> > -> _J2_Green `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 90: LATAbits.LATA2 = (J2_Blue > currentPWMOffset);
+"90
+[e = . . _LATAbits 0 2 -> -> > -> _J2_Blue `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 92: LATAbits.LATA4 = (J3_Red > currentPWMOffset);
+"92
+[e = . . _LATAbits 0 4 -> -> > -> _J3_Red `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 93: LATAbits.LATA3 = (J3_Green > currentPWMOffset);
+"93
+[e = . . _LATAbits 0 3 -> -> > -> _J3_Green `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 94: LATBbits.LATB0 = (J3_Blue > currentPWMOffset);
+"94
+[e = . . _LATBbits 0 0 -> -> > -> _J3_Blue `i -> _currentPWMOffset `i `i `uc ]
+[; ;main.c: 96: currentPWMOffset++;
+"96
+[e ++ _currentPWMOffset -> -> 1 `i `uc ]
+[; ;main.c: 98: INTCONbits.TMR0IF = (0);
+"98
+[e = . . _INTCONbits 0 2 -> -> 0 `i `uc ]
+"99
+}
+[e :U 358 ]
+[; ;main.c: 99: }
+[; ;main.c: 100: }
+"100
 [e :UE 356 ]
 }

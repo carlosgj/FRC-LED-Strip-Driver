@@ -30,6 +30,7 @@
 
 unsigned char processByteFlag = FALSE;
 unsigned char byteToProcess = 0;
+unsigned char currentPWMOffset = 0;
 
 void main(void) {
     init();
@@ -61,6 +62,12 @@ void init(void){
     J3_BLUE_LAT = FALSE;
     
     SPIinit(); 
+    
+    OPTION_REGbits.TMR0CS = 0; //Fosc/4
+    OPTION_REGbits.PSA = 0; //Assign prescaler
+    OPTION_REGbits.PS = 0b110; //1:128 prescaler (should result in 244 Hz rollover interval w/ 32 MHz Fosc)
+    INTCONbits.TMR0IE = TRUE;
+    
     ENINT
 }
 
@@ -76,5 +83,18 @@ void interrupt ISR(void){
         processByteFlag = TRUE;
         byteToProcess = SSP1BUF;
         PIR1bits.SSP1IF = FALSE;
+    }
+    if(INTCONbits.TMR0IF){
+        J2_RED_LAT = (J2_Red > currentPWMOffset);
+        J2_GREEN_LAT = (J2_Green > currentPWMOffset);
+        J2_BLUE_LAT = (J2_Blue > currentPWMOffset);
+        
+        J3_RED_LAT = (J3_Red > currentPWMOffset);
+        J3_GREEN_LAT = (J3_Green > currentPWMOffset);
+        J3_BLUE_LAT = (J3_Blue > currentPWMOffset);
+        
+        currentPWMOffset++;
+        
+        INTCONbits.TMR0IF = FALSE; 
     }
 }

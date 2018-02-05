@@ -1,5 +1,5 @@
 Version 3.2 HI-TECH Software Intermediate Code
-"3747 C:\Program Files (x86)\Microchip\xc8\v1.40\include\pic16f1827.h
+"3747 C:\Program Files (x86)\Microchip\xc8\v1.41\include\pic16f1827.h
 [s S203 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
 [n S203 . SSPM0 SSPM1 SSPM2 SSPM3 CKP SSPEN SSPOV WCOL ]
 "3757
@@ -22,7 +22,7 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;htc.h: 28: extern double __fpnormalize(double);
 [; ;xc8debug.h: 14: extern void __builtin_software_breakpoint(void);
 [; ;pic16f1827.h: 49: extern volatile unsigned char INDF0 @ 0x000;
-"51 C:\Program Files (x86)\Microchip\xc8\v1.40\include\pic16f1827.h
+"51 C:\Program Files (x86)\Microchip\xc8\v1.41\include\pic16f1827.h
 [; ;pic16f1827.h: 51: asm("INDF0 equ 00h");
 [; <" INDF0 equ 00h ;# ">
 [; ;pic16f1827.h: 54: typedef union {
@@ -2772,45 +2772,58 @@ Version 3.2 HI-TECH Software Intermediate Code
 [; ;pic.h: 192: extern unsigned char __resetbits;
 [; ;pic.h: 193: extern __bit __powerdown;
 [; ;pic.h: 194: extern __bit __timeout;
-"19 main.h
+"17 main.h
 [v _J2_Red `uc ~T0 @X0 1 e ]
 [i _J2_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 19: unsigned char J2_Red = 0;
-"20
+[; ;main.h: 17: unsigned char J2_Red = 0;
+"18
 [v _J2_Green `uc ~T0 @X0 1 e ]
 [i _J2_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 20: unsigned char J2_Green = 0;
-"21
+[; ;main.h: 18: unsigned char J2_Green = 0;
+"19
 [v _J2_Blue `uc ~T0 @X0 1 e ]
 [i _J2_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 21: unsigned char J2_Blue = 0;
-"23
+[; ;main.h: 19: unsigned char J2_Blue = 0;
+"21
 [v _J3_Red `uc ~T0 @X0 1 e ]
 [i _J3_Red
 -> -> 0 `i `uc
 ]
-[; ;main.h: 23: unsigned char J3_Red = 0;
-"24
+[; ;main.h: 21: unsigned char J3_Red = 0;
+"22
 [v _J3_Green `uc ~T0 @X0 1 e ]
 [i _J3_Green
 -> -> 0 `i `uc
 ]
-[; ;main.h: 24: unsigned char J3_Green = 0;
-"25
+[; ;main.h: 22: unsigned char J3_Green = 0;
+"23
 [v _J3_Blue `uc ~T0 @X0 1 e ]
 [i _J3_Blue
 -> -> 0 `i `uc
 ]
-[; ;main.h: 25: unsigned char J3_Blue = 0;
-[; ;main.h: 27: void init(void);
-[; ;main.h: 28: void run(void);
-[; ;main.h: 29: void interrupt ISR(void);
+[; ;main.h: 23: unsigned char J3_Blue = 0;
+[; ;main.h: 25: typedef struct RgbColor
+[; ;main.h: 26: {
+[; ;main.h: 27: unsigned char r;
+[; ;main.h: 28: unsigned char g;
+[; ;main.h: 29: unsigned char b;
+[; ;main.h: 30: } RgbColor;
+[; ;main.h: 32: typedef struct HsvColor
+[; ;main.h: 33: {
+[; ;main.h: 34: unsigned char h;
+[; ;main.h: 35: unsigned char s;
+[; ;main.h: 36: unsigned char v;
+[; ;main.h: 37: } HsvColor;
+[; ;main.h: 39: void init(void);
+[; ;main.h: 40: void run(void);
+[; ;main.h: 41: RgbColor HsvToRgb(HsvColor hsv);
+[; ;main.h: 42: void interrupt ISR(void);
 "9 spicomm.h
 [v _SPIcomm_mode `uc ~T0 @X0 1 e ]
 [i _SPIcomm_mode
@@ -2834,15 +2847,15 @@ Version 3.2 HI-TECH Software Intermediate Code
 [f ]
 [; ;spicomm.c: 15: if(SPIcomm_mode == 0){
 "15
-[e $ ! == -> _SPIcomm_mode `i -> 0 `i 350  ]
+[e $ ! == -> _SPIcomm_mode `i -> 0 `i 352  ]
 {
 [; ;spicomm.c: 17: switch(theByte){
 "17
-[e $U 352  ]
+[e $U 354  ]
 {
 [; ;spicomm.c: 18: case 'r':
 "18
-[e :U 353 ]
+[e :U 355 ]
 [; ;spicomm.c: 19: dataDestination = &J2_Red;
 "19
 [e = _dataDestination &U _J2_Red ]
@@ -2851,10 +2864,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 21: break;
 "21
-[e $U 351  ]
+[e $U 353  ]
 [; ;spicomm.c: 22: case 'g':
 "22
-[e :U 354 ]
+[e :U 356 ]
 [; ;spicomm.c: 23: dataDestination = &J2_Green;
 "23
 [e = _dataDestination &U _J2_Green ]
@@ -2863,10 +2876,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 25: break;
 "25
-[e $U 351  ]
+[e $U 353  ]
 [; ;spicomm.c: 26: case 'b':
 "26
-[e :U 355 ]
+[e :U 357 ]
 [; ;spicomm.c: 27: dataDestination = &J2_Blue;
 "27
 [e = _dataDestination &U _J2_Blue ]
@@ -2875,10 +2888,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 29: break;
 "29
-[e $U 351  ]
+[e $U 353  ]
 [; ;spicomm.c: 30: case 'R':
 "30
-[e :U 356 ]
+[e :U 358 ]
 [; ;spicomm.c: 31: dataDestination = &J3_Red;
 "31
 [e = _dataDestination &U _J3_Red ]
@@ -2887,10 +2900,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 33: break;
 "33
-[e $U 351  ]
+[e $U 353  ]
 [; ;spicomm.c: 34: case 'G':
 "34
-[e :U 357 ]
+[e :U 359 ]
 [; ;spicomm.c: 35: dataDestination = &J3_Green;
 "35
 [e = _dataDestination &U _J3_Green ]
@@ -2899,10 +2912,10 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 37: break;
 "37
-[e $U 351  ]
+[e $U 353  ]
 [; ;spicomm.c: 38: case 'B':
 "38
-[e :U 358 ]
+[e :U 360 ]
 [; ;spicomm.c: 39: dataDestination = &J3_Blue;
 "39
 [e = _dataDestination &U _J3_Blue ]
@@ -2911,28 +2924,28 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 1 `i `uc ]
 [; ;spicomm.c: 41: break;
 "41
-[e $U 351  ]
+[e $U 353  ]
 "42
 }
 [; ;spicomm.c: 42: }
-[e $U 351  ]
+[e $U 353  ]
 "17
-[e :U 352 ]
-[e [\ _theByte , $ -> -> 114 `ui `uc 353
- , $ -> -> 103 `ui `uc 354
- , $ -> -> 98 `ui `uc 355
- , $ -> -> 82 `ui `uc 356
- , $ -> -> 71 `ui `uc 357
- , $ -> -> 66 `ui `uc 358
- 351 ]
+[e :U 354 ]
+[e [\ _theByte , $ -> -> 114 `ui `uc 355
+ , $ -> -> 103 `ui `uc 356
+ , $ -> -> 98 `ui `uc 357
+ , $ -> -> 82 `ui `uc 358
+ , $ -> -> 71 `ui `uc 359
+ , $ -> -> 66 `ui `uc 360
+ 353 ]
 "42
-[e :U 351 ]
+[e :U 353 ]
 "43
 }
 [; ;spicomm.c: 43: }
-[e $U 359  ]
+[e $U 361  ]
 "44
-[e :U 350 ]
+[e :U 352 ]
 [; ;spicomm.c: 44: else{
 {
 [; ;spicomm.c: 46: *dataDestination = theByte;
@@ -2946,11 +2959,11 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = _SPIcomm_mode -> -> 0 `i `uc ]
 "49
 }
-[e :U 359 ]
+[e :U 361 ]
 [; ;spicomm.c: 49: }
 [; ;spicomm.c: 50: }
 "50
-[e :UE 349 ]
+[e :UE 351 ]
 }
 "52
 [v _SPIinit `(v ~T0 @X0 1 ef ]
@@ -2969,5 +2982,5 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e = . . _PIE1bits 0 3 -> -> 1 `i `uc ]
 [; ;spicomm.c: 56: }
 "56
-[e :UE 360 ]
+[e :UE 362 ]
 }

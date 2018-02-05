@@ -1,5 +1,5 @@
 //OPTIONS
-#define USE_INTERNAL_OSC
+//#define USE_INTERNAL_OSC
 
 // CONFIG1
 #ifdef USE_INTERNAL_OSC
@@ -7,7 +7,7 @@
 #else
 #pragma config FOSC = HS
 #endif
-#pragma config WDTE = ON        // Watchdog Timer Enable (WDT enabled)
+#pragma config WDTE = OFF        // Watchdog Timer Enable (WDT enabled)
 #pragma config PWRTE = OFF      // Power-up Timer Enable (PWRT disabled)
 #pragma config MCLRE = ON       // MCLR Pin Function Select (MCLR/VPP pin function is MCLR)
 #pragma config CP = OFF         // Flash Program Memory Code Protection (Program memory code protection is disabled)
@@ -23,10 +23,15 @@
 #pragma config STVREN = ON      // Stack Overflow/Underflow Reset Enable (Stack Overflow or Underflow will cause a Reset)
 #pragma config BORV = LO        // Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
 #pragma config LVP = ON         // Low-Voltage Programming Enable (Low-voltage programming enabled)
+
+#define _XTAL_FREQ 32000000
+
 #include <xc.h>
 #include "main.h"
 #include "pindefs.h"
 #include "spicomm.h"
+
+
 
 unsigned char processByteFlag = FALSE;
 unsigned char byteToProcess = 0;
@@ -43,6 +48,7 @@ void init(void){
     DISINT
 #ifdef USE_INTERNAL_OSC
     OSCCONbits.IRCF = 0b1110; //Set HFINTOSC to 32 MHz (w/ PLL)
+    OSCCONbits.SCS = 0;
 #endif
     
     INTCONbits.PEIE = TRUE;
@@ -61,10 +67,10 @@ void init(void){
     J3_BLUE_TRIS = OUTPUT;
     J3_BLUE_LAT = FALSE;
     
-    SPIinit(); 
+    //SPIinit(); 
     
     OPTION_REGbits.TMR0CS = 0; //Fosc/4
-    OPTION_REGbits.PSA = 0; //Assign prescaler
+    OPTION_REGbits.PSA = 1; //Assign prescaler
     OPTION_REGbits.PS = 0b110; //1:128 prescaler (should result in 244 Hz rollover interval w/ 32 MHz Fosc)
     INTCONbits.TMR0IE = TRUE;
     
@@ -72,12 +78,79 @@ void init(void){
 }
 
 void run(void){
-    if(processByteFlag){
-        processSPIByte(byteToProcess);
-        processByteFlag = FALSE;
+    J2_Red = J3_Red = 255;
+    while(J2_Green < 255){
+        J2_Green = ++J3_Green;
+        __delay_ms(5);
+    }
+    while(J2_Red > 0){
+        J2_Red = --J3_Red;
+        __delay_ms(5);
+    }
+    while(J2_Blue < 255){
+        J2_Blue = ++J3_Blue;
+        __delay_ms(5);
+    }
+    while(J2_Green > 0){
+        J2_Green = --J3_Green;
+        __delay_ms(5);
+    }
+    while(J2_Red < 255){
+        J2_Red = ++J3_Red;
+        __delay_ms(5);
+    }
+    while(J2_Blue > 0){
+        J2_Blue = --J3_Blue;
+        __delay_ms(5);
     }
 }
 
+
+
+RgbColor HsvToRgb(HsvColor hsv)
+{
+    RgbColor rgb;
+    unsigned char region, remainder, p, q, t;
+
+    if (hsv.s == 0)
+    {
+        rgb.r = hsv.v;
+        rgb.g = hsv.v;
+        rgb.b = hsv.v;
+        return rgb;
+    }
+
+    region = hsv.h / 43;
+    remainder = (hsv.h - (region * 43)) * 6; 
+
+    p = (hsv.v * (255 - hsv.s)) >> 8;
+    q = (hsv.v * (255 - ((hsv.s * remainder) >> 8))) >> 8;
+    t = (hsv.v * (255 - ((hsv.s * (255 - remainder)) >> 8))) >> 8;
+
+    switch (region)
+    {
+        case 0:
+            rgb.r = hsv.v; rgb.g = t; rgb.b = p;
+            break;
+        case 1:
+            rgb.r = q; rgb.g = hsv.v; rgb.b = p;
+            break;
+        case 2:
+            rgb.r = p; rgb.g = hsv.v; rgb.b = t;
+            break;
+        case 3:
+            rgb.r = p; rgb.g = q; rgb.b = hsv.v;
+            break;
+        case 4:
+            rgb.r = t; rgb.g = p; rgb.b = hsv.v;
+            break;
+        default:
+            rgb.r = hsv.v; rgb.g = p; rgb.b = q;
+            break;
+    }
+
+    return rgb;
+}
 void interrupt ISR(void){
     if(PIR1bits.SSP1IF){
         processByteFlag = TRUE;

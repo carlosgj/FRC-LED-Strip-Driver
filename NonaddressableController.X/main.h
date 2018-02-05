@@ -9,10 +9,8 @@
 #define INPUT (1)
 #define OUTPUT (0)
 
-#define ENINT INTCONbits.GIE == TRUE;
-#define DISINT INTCONbits.GIE == FALSE;
-
-#define _XTAL_FREQ (32e6)
+#define ENINT INTCONbits.GIE = TRUE;
+#define DISINT INTCONbits.GIE = FALSE;
 
 #define TMR0_INIT_VALUE 200
 
@@ -24,8 +22,23 @@ unsigned char J3_Red = 0;
 unsigned char J3_Green = 0;
 unsigned char J3_Blue = 0;
 
+typedef struct RgbColor
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+} RgbColor;
+
+typedef struct HsvColor
+{
+    unsigned char h;
+    unsigned char s;
+    unsigned char v;
+} HsvColor;
+
 void init(void);
 void run(void);
+RgbColor HsvToRgb(HsvColor hsv);
 void interrupt ISR(void);
 
 #endif	/* XC_HEADER_TEMPLATE_H */

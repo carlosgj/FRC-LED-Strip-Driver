@@ -30,12 +30,17 @@
 #include "main.h"
 #include "pindefs.h"
 #include "spicomm.h"
+#include "LUTs.h"
+#include "patterns.h"
 
 
 
 unsigned char processByteFlag = FALSE;
 unsigned char byteToProcess = 0;
 unsigned char currentPWMOffset = 0;
+
+unsigned int mode = MODE_PATTERN;
+unsigned int pattern = DEFAULT_PATTERN;
 
 void main(void) {
     init();
@@ -71,82 +76,115 @@ void init(void){
     
     OPTION_REGbits.TMR0CS = 0; //Fosc/4
     OPTION_REGbits.PSA = 1; //Assign prescaler
-    OPTION_REGbits.PS = 0b110; //1:128 prescaler (should result in 244 Hz rollover interval w/ 32 MHz Fosc)
+    OPTION_REGbits.PS = 0b110; //0b110 -> 1:128 prescaler (should result in 244 Hz rollover interval w/ 32 MHz Fosc)
     INTCONbits.TMR0IE = TRUE;
     
     ENINT
 }
 
 void run(void){
-    //rainbow();
-    //pinkGreenFade();
-    heartbeat();
+    switch(mode){
+        case MODE_PATTERN:
+            switch(pattern){
+                case PATTERN_GREEN_HEARTBEAT:
+                    GreenHeartbeat();
+                    break;
+                case PATTERN_RAINBOW:
+                    Rainbow();
+                    break;
+                case PATTERN_PINK_GREEN_FADE:
+                    PinkGreenFade();
+                    break;
+                case PATTERN_PINK_GREEN_HEARTBEAT:
+                    PinkGreenHeartbeat();
+                    break;
+                case PATTERN_PINK_HEARTBEAT:
+                    PinkHeartbeat();
+                    break;
+                case PATTERN_SLOW_GREEN_FLASH:
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 255;
+                    __delay_ms(750);
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(750);
+                    break;
+                case PATTERN_FAST_GREEN_FLASH:
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 255;
+                    __delay_ms(60);
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(60);
+                    break;
+                case PATTERN_SLOW_RED_FLASH:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(750);
+                    J2_Red = J3_Red = 0;
+                    __delay_ms(750);
+                    break;
+                case PATTERN_FAST_RED_FLASH:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(60);
+                    J2_Red = J3_Red = 0;
+                    __delay_ms(60);
+                    break;
+                case PATTERN_SLOW_PINK_FLASH:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 255;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(750);
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    __delay_ms(750);
+                    break;
+                case PATTERN_FAST_PINK_FLASH:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 255;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(60);
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    __delay_ms(60);
+                    break;
+                case PATTERN_PINK_GREEN_ALTERNATE_SLOW:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 255;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(750);
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 255;
+                    __delay_ms(750);
+                    break;
+                case PATTERN_PINK_GREEN_ALTERNATE_FAST:
+                    J2_Red = J3_Red = 255;
+                    J2_Blue = J3_Blue = 255;
+                    J2_Green = J3_Green = 0;
+                    __delay_ms(60);
+                    J2_Red = J3_Red = 0;
+                    J2_Blue = J3_Blue = 0;
+                    J2_Green = J3_Green = 255;
+                    __delay_ms(60);
+                    break;
+                            
+                default:
+                    pattern = PATTERN_GREEN_HEARTBEAT;
+                    break;
+            }
+            break;
+        case MODE_RGB:
+            //TODO
+            break;
+        default:
+            mode = MODE_PATTERN;
+            break;
+    }
 }
-    
-void heartbeat(){
-    J2_Red = J3_Red = 0;
-    J2_Blue = J3_Blue = 0;
-    unsigned char i =0;
-    for(i=0;i<56;i++){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(6);
-    }
-    for(;i>0;i--){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(6);
-    }
-
-    __delay_ms(1000);
-}
-
-void pinkGreenFade(){
-    J2_Red = J2_Blue = 0;
-    J3_Red = J3_Blue = 0;
-    J2_Green = J3_Green = 255;
-    while(J2_Green > 0){
-        J3_Green = --J2_Green;
-        J3_Red = ++J2_Red;
-        J3_Blue = ++J2_Blue;
-        __delay_ms(6);
-    }
-    __delay_ms(500);
-    while(J2_Green < 255){
-        J3_Green = ++J2_Green;
-        J3_Red = --J2_Red;
-        J3_Blue = --J2_Blue;
-        __delay_ms(6);
-    }
-    __delay_ms(500);
-}
-
-void rainbow(){
-    J2_Red = J3_Red = 255;
-    while(J2_Green < 255){
-        J2_Green = ++J3_Green;
-        __delay_ms(5);
-    }
-    while(J2_Red > 0){
-        J2_Red = --J3_Red;
-        __delay_ms(5);
-    }
-    while(J2_Blue < 255){
-        J2_Blue = ++J3_Blue;
-        __delay_ms(5);
-    }
-    while(J2_Green > 0){
-        J2_Green = --J3_Green;
-        __delay_ms(5);
-    }
-    while(J2_Red < 255){
-        J2_Red = ++J3_Red;
-        __delay_ms(5);
-    }
-    while(J2_Blue > 0){
-        J2_Blue = --J3_Blue;
-        __delay_ms(5);
-    }
-}
-
 
 
 RgbColor HsvToRgb(HsvColor hsv)

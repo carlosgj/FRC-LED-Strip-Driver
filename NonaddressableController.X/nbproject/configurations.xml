@@ -7,6 +7,8 @@
       <itemPath>main.h</itemPath>
       <itemPath>pindefs.h</itemPath>
       <itemPath>spicomm.h</itemPath>
+      <itemPath>LUTs.h</itemPath>
+      <itemPath>patterns.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -17,6 +19,7 @@
                    projectFiles="true">
       <itemPath>main.c</itemPath>
       <itemPath>spicomm.c</itemPath>
+      <itemPath>patterns.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -34,7 +37,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>1.40</languageToolchainVersion>
+        <languageToolchainVersion>1.42</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -136,6 +139,7 @@
         <property key="ToolFirmwareFilePath"
                   value="Press to browse for a specific firmware version"/>
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
@@ -150,7 +154,7 @@
                   value="${memories.instruction.ram.ranges}"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fff"/>
-        <property key="poweroptions.powerenable" value="false"/>
+        <property key="poweroptions.powerenable" value="true"/>
         <property key="programmertogo.imagename" value=""/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
@@ -168,7 +172,7 @@
         <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="voltagevalue" value="4.75"/>
+        <property key="voltagevalue" value="5.0"/>
       </PICkit3PlatformTool>
       <XC8-config-global>
         <property key="advanced-elf" value="true"/>
@@ -187,7 +191,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>Simulator</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>1.40</languageToolchainVersion>
+        <languageToolchainVersion>1.42</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <compileType>
@@ -397,9 +401,25 @@
         <property key="warningmessagebreakoptions.W0028_TBLRD_WORM_CONFIG_MEMORY"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0029_TBLRD_DEVICE_ID" value="report"/>
+        <property key="warningmessagebreakoptions.W0030_CORE_UNIMPLEMENTED_MEMORY_ACCESS"
+                  value="report"/>
         <property key="warningmessagebreakoptions.W0031_BSLIM_INSUFFICIENT_BOOT_SEGMENT"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0032_BSLIM_LIMITS_EXCEEDS_PROG_MEMORY"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0033_CORE_UNPREDICTABLE_OPCODE"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0034_CORE_UNALIGNED_MEMORY_ACCESS"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0040_FPU_DIFF_CP10_CP11"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0041_FPU_ACCESS_DENIED"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0042_FPU_PRIVILEGED_ACCESS_ONLY"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0043_FPU_CP_RESERVED_VALUE"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W0044_FPU_OUT_OF_RANGE"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0051_INSTRUCTION_DIV_NOT_ENOUGH_REPEAT"
                   value="report"/>
@@ -516,6 +536,10 @@
                   value="report"/>
         <property key="warningmessagebreakoptions.W0702_CLC_CIRCULAR_LOOP"
                   value="report"/>
+        <property key="warningmessagebreakoptions.W10001_RESERVED_IRQ_HANDLER_INVOKED"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W10002_UNSUPPORTED_CLK_SOURCE"
+                  value="report"/>
         <property key="warningmessagebreakoptions.W1201_DATAFLASH_MEM_OUTSIDE_RANGE"
                   value="report"/>
         <property key="warningmessagebreakoptions.W1202_DATAFLASH_ERASE_WHILE_LOCKED"
@@ -552,6 +576,10 @@
         <property key="warningmessagebreakoptions.W2502_OUTPUTCOMPARE_BAD_SYNC_SOURCE"
                   value="report"/>
         <property key="warningmessagebreakoptions.W2503_OUTPUTCOMPARE_BAD_TRIGGER_SOURCE"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W2700_MPU_ILLEGAL_DREGION"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W2701_MPU_INVALID_REGION"
                   value="report"/>
         <property key="warningmessagebreakoptions.W7001_SMT_CLK_SELECTION_NOT_SUPPORT"
                   value="report"/>
@@ -605,6 +633,10 @@
         <property key="warningmessagebreakoptions.W9804_SCL_UNRECOGNIZED_LABEL"
                   value="report"/>
         <property key="warningmessagebreakoptions.W9805_SCL_UNRECOGNIZED_VAR"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W9901_RTSP_INVALID_OPERATION_SELECTION"
+                  value="report"/>
+        <property key="warningmessagebreakoptions.W9902_RTSP_FLASH_PROGRAM_WRITE_PROTECTED"
                   value="report"/>
         <property key="warningmessagebreakoptions.displaywarningmessagesoption"
                   value=""/>

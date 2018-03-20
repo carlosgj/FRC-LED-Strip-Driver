@@ -1,5 +1,5 @@
 //OPTIONS
-//#define USE_INTERNAL_OSC
+#define USE_INTERNAL_OSC
 
 // CONFIG1
 #ifdef USE_INTERNAL_OSC

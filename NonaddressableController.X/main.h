@@ -43,8 +43,5 @@ void init(void);
 void run(void);
 RgbColor HsvToRgb(HsvColor hsv);
 void interrupt ISR(void);
-void rainbow();
-void pinkGreenFade();
-void heartbeat();
 #endif	/* XC_HEADER_TEMPLATE_H */
 

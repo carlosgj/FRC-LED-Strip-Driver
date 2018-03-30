@@ -2,6 +2,7 @@
 #define	MAIN_H
 
 #include <xc.h> // include processor files - each processor file is guarded.
+#include "patterns.h"
 
 #define TRUE (1)
 #define FALSE (0)
@@ -24,6 +25,9 @@ unsigned char J2_Blue = 0;
 unsigned char J3_Red = 0;
 unsigned char J3_Green = 0;
 unsigned char J3_Blue = 0;
+
+unsigned char mode = MODE_PATTERN;
+unsigned char pattern = DEFAULT_PATTERN;
 
 typedef struct RgbColor
 {

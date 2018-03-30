@@ -33,14 +33,13 @@
 #include "LUTs.h"
 #include "patterns.h"
 
-
+unsigned char dataByteQueue[255];
+unsigned char dataQueueCounter = 0;
+unsigned char lastProcessedByte = 0;
 
 unsigned char processByteFlag = FALSE;
 unsigned char byteToProcess = 0;
 unsigned char currentPWMOffset = 0;
-
-unsigned int mode = MODE_PATTERN;
-unsigned int pattern = DEFAULT_PATTERN;
 
 void main(void) {
     init();
@@ -53,9 +52,10 @@ void init(void){
     DISINT
 #ifdef USE_INTERNAL_OSC
     OSCCONbits.IRCF = 0b1110; //Set HFINTOSC to 32 MHz (w/ PLL)
-    OSCCONbits.SCS = 0;
+    OSCCONbits.SCS = 0b0;
 #endif
-    
+    ANSELA = 0;
+    ANSELB = 0;
     INTCONbits.PEIE = TRUE;
     
     J2_RED_TRIS = OUTPUT;
@@ -72,7 +72,7 @@ void init(void){
     J3_BLUE_TRIS = OUTPUT;
     J3_BLUE_LAT = FALSE;
     
-    //SPIinit(); 
+    SPIinit(); 
     
     OPTION_REGbits.TMR0CS = 0; //Fosc/4
     OPTION_REGbits.PSA = 1; //Assign prescaler
@@ -82,7 +82,22 @@ void init(void){
     ENINT
 }
 
+unsigned int SPITimeoutCounter = 0;
+
 void run(void){
+    if(dataQueueCounter > lastProcessedByte){
+        byteToProcess = dataByteQueue[lastProcessedByte++];
+        processSPIByte(byteToProcess);
+    }
+    if(SPIcomm_mode == SPICOMM_MODE_WAITING){
+        SPITimeoutCounter++;
+        if(SPITimeoutCounter > 50000){
+            SPIcomm_mode = SPICOMM_MODE_IDLE;
+        }
+    }
+    else{
+        SPITimeoutCounter = 0;
+    }
     switch(mode){
         case MODE_PATTERN:
             switch(pattern){
@@ -178,7 +193,6 @@ void run(void){
             }
             break;
         case MODE_RGB:
-            //TODO
             break;
         default:
             mode = MODE_PATTERN;
@@ -233,10 +247,14 @@ RgbColor HsvToRgb(HsvColor hsv)
 }
 void interrupt ISR(void){
     if(PIR1bits.SSP1IF){
-        processByteFlag = TRUE;
-        byteToProcess = SSP1BUF;
+        dataByteQueue[dataQueueCounter] = SSP1BUF;
+        dataQueueCounter++;
+        //byteToProcess = SSP1BUF;
         PIR1bits.SSP1IF = FALSE;
+        //processByteFlag = TRUE;
+        return;
     }
+    
     if(INTCONbits.TMR0IF){
         J2_RED_LAT = (J2_Red > currentPWMOffset);
         J2_GREEN_LAT = (J2_Green > currentPWMOffset);

@@ -3,7 +3,7 @@
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
-unsigned char heartbeatLUT[] = {
+const unsigned char heartbeatLUT[] = {
 0,
 1,
 6,

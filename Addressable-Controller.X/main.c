@@ -23,15 +23,34 @@
 #include <xc.h>
 #include "main.h"
 #include "shared.h"
+#include "color.h"
+
 void main(void) {
     init();
     clearData();
-    LedData[0].green = 0xff;
-    LedData[1].red = 0xff;
+    unsigned char i;
+    HsvColor hsv;
+    hsv.h = 0;
+    hsv.s = 255;
+    hsv.v = 100;
+//    for(i=0; i<NUM_LEDS; i+=10){
+//        LedData[i].green = 0xff;
+//    }
+//    for(i=5; i<NUM_LEDS; i+=10){
+//        LedData[i].red = 0x7f;
+//        LedData[i].blue = 0x7f;
+//    }
+    for(i=0; i<NUM_LEDS; i++){
+        RgbColor thisRGB = HsvToRgb(hsv);
+        LedData[i].blue = thisRGB.b;
+        LedData[i].green = thisRGB.g;
+        LedData[i].red = thisRGB.r;
+        hsv.h += 3;
+    }
     while(TRUE){
         run();
-        __delay_ms(100);
-        //shiftPatternOut();
+        __delay_ms(30);
+        shiftPatternOut();
     }
 }
 

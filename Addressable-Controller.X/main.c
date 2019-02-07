@@ -24,6 +24,7 @@
 #include "main.h"
 #include "shared.h"
 #include "color.h"
+#include "spicomm.h"
 
 void main(void) {
     init();
@@ -49,23 +50,41 @@ void main(void) {
     }
     while(TRUE){
         run();
-        __delay_ms(30);
-        shiftPatternOut();
     }
 }
 
 void run(){
     sendData();
-    //__delay_ms(1);
+    __delay_ms(30);
+    shiftPatternOut();
+    implementSPITimeout();
+    if(SSP1CON1bits.SSPOV){
+        SSP1CON1bits.SSPOV = FALSE;
+    }
+    if(loadByteCounter != processByteCounter){
+        processSPIByte(byteBuffer[processByteCounter]);
+        processByteCounter++;
+        processByteCounter &= 0x7;
+    }
 }
 
 void init(){
     OSCCONbits.IRCF = 0b1110;
     ANSELA = FALSE;
     ANSELB = FALSE;
-    TRISBbits.TRISB4 = OUTPUT;
-    TRISBbits.TRISB1 = OUTPUT;
     TRISAbits.TRISA2 = OUTPUT;
+    
+    //Setup timer
+    OPTION_REGbits.TMR0CS = 0; //Fosc/4 = 8 MHz
+    OPTION_REGbits.PSA = 0; //Assign prescaler
+    OPTION_REGbits.PS = 0b110; //0b101 -> 1:64 prescaler (should result in 8 us timer tick w/ 32 MHz Fosc)
+    INTCONbits.TMR0IF = FALSE;
+    TMR0 = 125; //Setup timer for 1 ms clock
+    INTCONbits.TMR0IE = TRUE;
+    SPIinit();
+    
+    INTCONbits.PEIE = TRUE;
+    INTCONbits.GIE = TRUE;
 }
 
 void clearData(void){
@@ -117,4 +136,22 @@ void copy(unsigned char * src, unsigned char * dest){
     dest[0] = src[0];
     dest[1] = src[1];
     dest[2] = src[2];
+}
+
+void interrupt ISR(){
+    //Service timer interrupts
+    if(INTCONbits.TMR0IF){ 
+        ms_count++;
+        TMR0 = 125;
+        INTCONbits.TMR0IF = FALSE; 
+    }
+    
+    //Handle SPI reception
+    if(PIR1bits.SSP1IF){
+        byteBuffer[loadByteCounter] = SSP1BUF;
+        PIR1bits.SSP1IF = FALSE;
+        SSP1CON1bits.SSPOV = FALSE;
+        loadByteCounter++;
+        loadByteCounter &= 0x7;
+    }
 }

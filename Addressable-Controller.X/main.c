@@ -25,38 +25,21 @@
 #include "shared.h"
 #include "color.h"
 #include "spicomm.h"
+#include "patterns.h"
 
 void main(void) {
     init();
     clearData();
-    unsigned char i;
-    HsvColor hsv;
-    hsv.h = 0;
-    hsv.s = 255;
-    hsv.v = 100;
-//    for(i=0; i<NUM_LEDS; i+=10){
-//        LedData[i].green = 0xff;
-//    }
-//    for(i=5; i<NUM_LEDS; i+=10){
-//        LedData[i].red = 0x7f;
-//        LedData[i].blue = 0x7f;
-//    }
-    for(i=0; i<NUM_LEDS; i++){
-        RgbColor thisRGB = HsvToRgb(hsv);
-        LedData[i].blue = thisRGB.b;
-        LedData[i].green = thisRGB.g;
-        LedData[i].red = thisRGB.r;
-        hsv.h += 3;
-    }
     while(TRUE){
         run();
     }
 }
 
 void run(){
-    sendData();
+    sendData1();
+    sendData2();
     __delay_ms(30);
-    shiftPatternOut();
+    //shiftPatternOut();
     implementSPITimeout();
     if(SSP1CON1bits.SSPOV){
         SSP1CON1bits.SSPOV = FALSE;
@@ -66,6 +49,7 @@ void run(){
         processByteCounter++;
         processByteCounter &= 0x7;
     }
+    processPattern();
 }
 
 void init(){
@@ -73,6 +57,7 @@ void init(){
     ANSELA = FALSE;
     ANSELB = FALSE;
     TRISAbits.TRISA2 = OUTPUT;
+    TRISAbits.TRISA3 = OUTPUT;
     
     //Setup timer
     OPTION_REGbits.TMR0CS = 0; //Fosc/4 = 8 MHz
@@ -132,6 +117,20 @@ void shiftPatternOut(){
     }
 }
 
+void pushOutward(unsigned char red, unsigned char green, unsigned char blue){
+    unsigned char i;
+    for(i=0; i<NUM_LEDS; i++){
+        if(i == (NUM_LEDS-1)){
+            LedData[i].red = red;
+            LedData[i].green = green;
+            LedData[i].blue = blue;
+        }
+        else{
+            copy(LedData[i+1].all, LedData[i].all);
+        }
+    }
+}
+
 void copy(unsigned char * src, unsigned char * dest){
     dest[0] = src[0];
     dest[1] = src[1];
@@ -154,4 +153,235 @@ void interrupt ISR(){
         loadByteCounter++;
         loadByteCounter &= 0x7;
     }
+}
+
+void setSolidColor(unsigned char red, unsigned char green, unsigned char blue){
+    unsigned char i;
+    for(i=0; i<NUM_LEDS; i++){
+        LedData[i].green = green;
+        LedData[i].blue = blue;
+        LedData[i].red = red;
+    }
+}
+
+void processPattern(){
+    unsigned char i; 
+    unsigned char j;
+    static HsvColor hsv;
+    
+    switch(pattern){
+        case PATTERN_GREEN_SOLID:
+            if(patternState == 0){
+                setSolidColor(0, 0xff, 0);
+            }
+            patternState++;
+            break;
+        case PATTERN_GREEN_HEARTBEAT:
+            if(patternState < 56){
+                setSolidColor(0, exponentialLUT[patternState], 0);
+                patternState++;
+            }
+            else{
+                setSolidColor(0, exponentialLUT[111-patternState], 0);
+                patternState++;
+            }
+            if(patternState > 111){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_RAINBOW:
+            if(patternState == 0){
+                hsv.h = 0;
+                hsv.s = 255;
+                hsv.v = 100;
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            patternState++;
+            break;
+        case PATTERN_PINK_GREEN_FADE:
+            if(patternState < 128){
+                setSolidColor((2*patternState), 255-(2*patternState), (2*patternState));
+            }
+            else{
+                setSolidColor((2*(255-patternState)), (2*(patternState-128)), (2*(255-patternState)));
+            }
+            
+            patternState++;
+            break;
+        case PATTERN_PINK_GREEN_HEARTBEAT:
+            break;
+        case PATTERN_PINK_HEARTBEAT:
+            if(patternState < 56){
+                setSolidColor(exponentialLUT[patternState], 0, exponentialLUT[patternState]);
+                patternState++;
+            }
+            else{
+                setSolidColor(exponentialLUT[111-patternState], 0, exponentialLUT[111-patternState]);
+                patternState++;
+            }
+            if(patternState > 111){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_SLOW_GREEN_FLASH:
+            if(patternState < (SLOW_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(0, 255, 0);
+            }
+            patternState++;
+            if(patternState == SLOW_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_FAST_GREEN_FLASH:
+            if(patternState < (FAST_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(0, 255, 0);
+            }
+            patternState++;
+            if(patternState == FAST_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_SLOW_RED_FLASH:
+            if(patternState < (SLOW_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(255, 0, 0);
+            }
+            patternState++;
+            if(patternState == SLOW_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_FAST_RED_FLASH:
+            if(patternState < (FAST_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(255, 0, 0);
+            }
+            patternState++;
+            if(patternState == FAST_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_SLOW_PINK_FLASH:
+            if(patternState < (SLOW_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(255, 0, 255);
+            }
+            patternState++;
+            if(patternState == SLOW_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_FAST_PINK_FLASH:
+            if(patternState < (FAST_FLASH_PERIOD / 2)){
+                clearData();
+            }
+            else{
+                setSolidColor(255, 0, 255);
+            }
+            patternState++;
+            if(patternState == FAST_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_PINK_GREEN_ALTERNATE_SLOW:
+            if(patternState < (SLOW_FLASH_PERIOD / 2)){
+                setSolidColor(0, 255, 0);
+            }
+            else{
+                setSolidColor(255, 0, 255);
+            }
+            patternState++;
+            if(patternState == SLOW_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_PINK_GREEN_ALTERNATE_FAST:
+            if(patternState < (FAST_FLASH_PERIOD / 2)){
+                setSolidColor(0, 255, 0);
+            }
+            else{
+                setSolidColor(255, 0, 255);
+            }
+            patternState++;
+            if(patternState == FAST_FLASH_PERIOD){
+                patternState = 0;
+            }
+            break;
+        case PATTERN_OUTGOING_RAINBOW_SLOW:
+            if(patternState == 0){
+                hsv.h = 0; 
+                hsv.s = 255; 
+                hsv.v = 255;
+                j=0; 
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            else{
+                if((patternState % 2) == 0){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    pushOutward(thisRGB.r, thisRGB.g, thisRGB.b);
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            if(patternState == 255){
+                patternState = 1;
+            }
+            else{
+                patternState++;
+            }
+            break;
+        case PATTERN_OUTGOING_RAINBOW_FAST:
+            if(patternState == 0){
+                hsv.h = 0; 
+                hsv.s = 255; 
+                hsv.v = 255;
+                j=0; 
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            else{
+                RgbColor thisRGB = HsvToRgb(hsv);
+                pushOutward(thisRGB.r, thisRGB.g, thisRGB.b);
+                hsv.h += RAINBOW_PERIOD;
+            }
+            if(patternState == 255){
+                patternState = 1;
+            }
+            else{
+                patternState++;
+            }
+            break;
+        default:
+            break;
+            
+    }
+    
 }

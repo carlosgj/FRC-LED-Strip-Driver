@@ -19,7 +19,7 @@ void processSPIByte(unsigned char theByte){
             SPIcomm_mode = SPICOMM_MODE_WAITING;
             break;
         case SPICOMM_MODE_WAITING:
-            if(theByte ^ prospective_byte == 0xff){
+            if((theByte ^ prospective_byte) == 0xff){
                 //Good message
                 pattern = prospective_byte;
                 SPIcomm_mode = SPICOMM_MODE_IDLE;

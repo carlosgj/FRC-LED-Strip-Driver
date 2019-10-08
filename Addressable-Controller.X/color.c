@@ -1,11 +1,3 @@
-/*
- * File:   color.c
- * Author: carlosj
- *
- * Created on February 4, 2019, 4:40 PM
- */
-
-
 #include <xc.h>
 #include "shared.h"
 #include "main.h"
@@ -25,12 +17,12 @@ RgbColor HsvToRgb(HsvColor hsv)
         return rgb;
     }
 
-    region = hsv.h / 43;
-    remainder = (hsv.h - (region * 43)) * 6; 
+    region = hsv.h / 43u;
+    remainder = (hsv.h - (region * 43u)) * 6u; 
 
-    p = (hsv.v * (255 - hsv.s)) >> 8;
-    q = (hsv.v * (255 - ((hsv.s * (unsigned int)remainder) >> 8))) >> 8;
-    t = (hsv.v * (255 - ((hsv.s * (unsigned int)(255 - remainder)) >> 8))) >> 8;
+    p = (hsv.v * (255u - hsv.s)) >> 8u;
+    q = (hsv.v * (255u - ((hsv.s * (unsigned int)remainder) >> 8u))) >> 8u;
+    t = (hsv.v * (255u - ((hsv.s * (unsigned int)(255u - remainder)) >> 8u))) >> 8u;
 
     switch (region)
     {

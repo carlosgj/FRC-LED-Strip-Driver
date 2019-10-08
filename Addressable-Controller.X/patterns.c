@@ -1,117 +1,277 @@
 #include <xc.h>
-#include "LUTs.h"
-#include "main.h"
 #include "patterns.h"
 
-#ifndef _XTAL_FREQ
-#define _XTAL_FREQ 32000000
-#endif
-
-void GreenHeartbeat(){
-    J2_Red = J3_Red = 0;
-    J2_Blue = J3_Blue = 0;
-    unsigned char i =0;
-    for(i=0;i<56;i++){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(6);
+void clearData(void){
+    unsigned char i;
+    for(i=0; i<NUM_LEDS; i++){
+        LedData[i].red = 0x00;
+        LedData[i].green = 0x00;
+        LedData[i].blue = 0x00;
     }
-    for(;i>0;i--){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(5);
-    }
-
-    __delay_ms(1000);
 }
 
-void PinkHeartbeat(){
-    J2_Green = J3_Green = 0;
-    unsigned char i =0;
-    for(i=0;i<56;i++){
-        J2_Red = J2_Blue = J3_Red = J3_Blue = exponentialLUT[i];
-        __delay_ms(6);
+void shiftPatternIn(){
+    unsigned char i;
+    union ledData_t holding;
+    for(i=(NUM_LEDS); i>0; i--){
+        if(i==(NUM_LEDS)){
+            holding.red = LedData[i-1u].red;
+            holding.green = LedData[i-1u].green;
+            holding.blue = LedData[i-1u].blue;
+        }
+        if(i == 1){
+            LedData[i-1u].red = holding.red;
+            LedData[i-1u].green = holding.green;
+            LedData[i-1u].blue = holding.blue;
+        }
+        else{
+            LedData[i-1u] = LedData[i-2u];
+        }
     }
-    for(;i>0;i--){
-        J2_Red = J2_Blue = J3_Red = J3_Blue = exponentialLUT[i];
-        __delay_ms(5);
-    }
-
-    __delay_ms(1000);
 }
 
-void PinkGreenHeartbeat(){
-    unsigned char i =0;
-    //green
-    J2_Red = J3_Red =0;
-    J2_Blue = J3_Blue = 0;
-    for(i=0;i<sizeof(exponentialLUT);i++){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(6);
+void shiftPatternOut(){
+    unsigned char i;
+    union ledData_t holding;
+    for(i=0; i<NUM_LEDS; i++){
+        if(i==0){
+            copy(LedData[i].all, holding.all);
+        }
+        if(i == (NUM_LEDS-1)){
+            copy(holding.all, LedData[i].all);
+        }
+        else{
+            copy(LedData[i+1u].all, LedData[i].all);
+        }
     }
-    for(;i>0;i--){
-        J2_Green = J3_Green = exponentialLUT[i];
-        __delay_ms(5);
+}
+
+void pushOutward(unsigned char red, unsigned char green, unsigned char blue){
+    unsigned char i;
+    for(i=0; i<NUM_LEDS; i++){
+        if(i == (NUM_LEDS-1)){
+            LedData[i].red = red;
+            LedData[i].green = green;
+            LedData[i].blue = blue;
+        }
+        else{
+            copy(LedData[i+1u].all, LedData[i].all);
+        }
     }
-    J2_Green = J3_Green = 0;
-    __delay_ms(1000);
+}
+
+void copy(unsigned char * src, unsigned char * dest){
+    dest[0] = src[0];
+    dest[1] = src[1];
+    dest[2] = src[2];
+}
+
+void setSolidColor(unsigned char red, unsigned char green, unsigned char blue){
+    unsigned char i;
+    for(i=0; i<NUM_LEDS; i++){
+        LedData[i].green = green;
+        LedData[i].blue = blue;
+        LedData[i].red = red;
+    }
+}
+
+void flash(unsigned char r1, unsigned char g1, unsigned char b1, 
+        unsigned char r2, unsigned char g2, unsigned char b2, 
+        unsigned char period){
+    if(patternState < (period / 2)){
+        setSolidColor(r1, g1, b1);
+    }
+    else{
+        setSolidColor(r2, g2, b2);
+    }
+    patternState++;
+    if(patternState == period){
+        patternState = 0;
+    }
+}
+
+void heartbeat(unsigned char red, unsigned char green, unsigned char blue, unsigned char speed){
+    unsigned char val;
+    if(patternState < sizeof(exponentialLUT)){
+        val = exponentialLUT[patternState];
+        patternState += speed;
+    }
+    else{
+        val = exponentialLUT[111u-patternState];
+        patternState += speed;
+    }
+    setSolidColor((unsigned char)(red*val), (unsigned char)(green*val), (unsigned char)(blue*val));
+    if(patternState >= (2*sizeof(exponentialLUT))){
+        patternState = 0;
+    }
+}
+
+void processPattern(){
+    unsigned char i; 
+    unsigned char j;
+    static HsvColor hsv;
     
-    //pink
-    J2_Green = J3_Green =0;
-    for(i=0;i<sizeof(exponentialLUT);i++){
-        J2_Red = J2_Blue = J3_Red = J3_Blue = exponentialLUT[i];
-        __delay_ms(6);
+    switch(pattern){
+        case PATTERN_OFF:
+            if(patternState == 0){
+                clearData();
+            }
+            patternState++;
+            break;
+        case PATTERN_GREEN_SOLID:
+            if(patternState == 0){
+                setSolidColor(0, 255, 0);
+            }
+            patternState++;
+            break;
+        case PATTERN_PINK_SOLID:
+            if(patternState == 0){
+                setSolidColor(255, 0, 255);
+            }
+            patternState++;
+            break;
+        case PATTERN_RED_SOLID:
+            if(patternState == 0){
+                setSolidColor(255, 0, 0);
+            }
+            patternState++;
+            break;
+        case PATTERN_GREEN_HEARTBEAT_SLOW:
+            heartbeat(0, 1, 0, 1);
+            break;
+        case PATTERN_PINK_HEARTBEAT_SLOW:
+            heartbeat(1, 0, 1, 1);
+            break;
+        case PATTERN_RED_HEARTBEAT_SLOW:
+            heartbeat(1, 0, 0, 1);
+            break;
+        case PATTERN_GREEN_HEARTBEAT_FAST:
+            heartbeat(0, 1, 0, 2);
+            break;
+        case PATTERN_PINK_HEARTBEAT_FAST:
+            heartbeat(1, 0, 1, 2);
+            break;
+        case PATTERN_RED_HEARTBEAT_FAST:
+            heartbeat(1, 0, 0, 2);
+            break;
+        case PATTERN_RAINBOW_SPACE:
+            if(patternState == 0){
+                hsv.h = 0;
+                hsv.s = 255;
+                hsv.v = 100;
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            patternState++;
+            break;
+        case PATTERN_PINK_GREEN_FADE_SLOW:
+            if(patternState < 128u){
+                setSolidColor((2u*patternState), 255u-(2u*patternState), (2u*patternState));
+            }
+            else{
+                setSolidColor((2u*(255u-patternState)), (2u*(patternState-128u)), (2u*(255u-patternState)));
+            }
+            
+            patternState++;
+            break;
+        case PATTERN_PINK_GREEN_FADE_FAST:
+            if(patternState < 128u){
+                setSolidColor((2u*patternState), 255u-(2u*patternState), (2u*patternState));
+            }
+            else{
+                setSolidColor((2u*(255u-patternState)), (2u*(patternState-128u)), (2u*(255u-patternState)));
+            }
+            
+            patternState += 2;
+            break;
+        case PATTERN_PINK_GREEN_HEARTBEAT_SLOW:
+            break;
+        case PATTERN_GREEN_FLASH_SLOW:
+            flash(0, 0, 0, 0, 255, 0, SLOW_FLASH_PERIOD);
+            break;
+        case PATTERN_GREEN_FLASH_FAST:
+            flash(0, 0, 0, 0, 255, 0, FAST_FLASH_PERIOD);
+            break;
+        case PATTERN_RED_FLASH_SLOW:
+            flash(0, 0, 0, 255, 0, 0, SLOW_FLASH_PERIOD);
+            break;
+        case PATTERN_RED_FLASH_FAST:
+            flash(0, 0, 0, 255, 0, 0, FAST_FLASH_PERIOD);
+            break;
+        case PATTERN_PINK_FLASH_SLOW:
+            flash(0, 0, 0, 255, 0, 255, SLOW_FLASH_PERIOD);
+            break;
+        case PATTERN_PINK_FLASH_FAST:
+            flash(0, 0, 0, 255, 0, 255, FAST_FLASH_PERIOD);
+            break;
+        case PATTERN_PINK_GREEN_ALTERNATE_SLOW:
+            flash(0, 255, 0, 255, 0, 255, SLOW_FLASH_PERIOD);
+            break;
+        case PATTERN_PINK_GREEN_ALTERNATE_FAST:
+            flash(0, 255, 0, 255, 0, 255, FAST_FLASH_PERIOD);
+            break;
+        case PATTERN_RAINBOW_SPACE_OUT_SLOW:
+            if(patternState == 0){
+                hsv.h = 0; 
+                hsv.s = 255; 
+                hsv.v = 255;
+                j=0; 
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            else{
+                if((patternState % 2) == 0){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    pushOutward(thisRGB.r, thisRGB.g, thisRGB.b);
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            if(patternState == 255){
+                patternState = 1;
+            }
+            else{
+                patternState++;
+            }
+            break;
+        case PATTERN_RAINBOW_SPACE_OUT_FAST:
+            if(patternState == 0){
+                hsv.h = 0; 
+                hsv.s = 255; 
+                hsv.v = 255;
+                j=0; 
+                for(i=0; i<NUM_LEDS; i++){
+                    RgbColor thisRGB = HsvToRgb(hsv);
+                    LedData[i].blue = thisRGB.b;
+                    LedData[i].green = thisRGB.g;
+                    LedData[i].red = thisRGB.r;
+                    hsv.h += RAINBOW_PERIOD;
+                }
+            }
+            else{
+                RgbColor thisRGB = HsvToRgb(hsv);
+                pushOutward(thisRGB.r, thisRGB.g, thisRGB.b);
+                hsv.h += RAINBOW_PERIOD;
+            }
+            if(patternState == 255){
+                patternState = 1;
+            }
+            else{
+                patternState++;
+            }
+            break;
+        default:
+            break;
+            
     }
-    for(;i>0;i--){
-        J2_Red = J2_Blue = J3_Red = J3_Blue = exponentialLUT[i];
-        __delay_ms(5);
-    }
-    J2_Red = J2_Blue = J3_Red = J3_Blue = 0;
-    __delay_ms(1000);
-}
-
-void PinkGreenFade(){
-    J2_Red = J2_Blue = 0;
-    J3_Red = J3_Blue = 0;
-    J2_Green = J3_Green = 255;
-    while(J2_Green > 0){
-        J3_Green = --J2_Green;
-        J3_Red = ++J2_Red;
-        J3_Blue = ++J2_Blue;
-        __delay_ms(6);
-    }
-    __delay_ms(500);
-    while(J2_Green < 255){
-        J3_Green = ++J2_Green;
-        J3_Red = --J2_Red;
-        J3_Blue = --J2_Blue;
-        __delay_ms(6);
-    }
-    __delay_ms(500);
-}
-
-void Rainbow(){
-    J2_Red = J3_Red = 255;
-    while(J2_Green < 255){
-        J2_Green = ++J3_Green;
-        __delay_ms(5);
-    }
-    while(J2_Red > 0){
-        J2_Red = --J3_Red;
-        __delay_ms(5);
-    }
-    while(J2_Blue < 255){
-        J2_Blue = ++J3_Blue;
-        __delay_ms(5);
-    }
-    while(J2_Green > 0){
-        J2_Green = --J3_Green;
-        __delay_ms(5);
-    }
-    while(J2_Red < 255){
-        J2_Red = ++J3_Red;
-        __delay_ms(5);
-    }
-    while(J2_Blue > 0){
-        J2_Blue = --J3_Blue;
-        __delay_ms(5);
-    }
+    
 }

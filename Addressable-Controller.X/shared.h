@@ -11,7 +11,7 @@
 #define THEPIN2 0xC, 3
 #endif 
 
-#define NUM_LEDS 64
+#define NUM_LEDS 45
 
 #endif	/* XC_HEADER_TEMPLATE_H */
 

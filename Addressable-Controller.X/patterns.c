@@ -146,13 +146,13 @@ void processPattern(){
             heartbeat(1, 0, 0, 1);
             break;
         case PATTERN_GREEN_HEARTBEAT_FAST:
-            heartbeat(0, 1, 0, 2);
+            heartbeat(0, 1, 0, 3);
             break;
         case PATTERN_PINK_HEARTBEAT_FAST:
-            heartbeat(1, 0, 1, 2);
+            heartbeat(1, 0, 1, 3);
             break;
         case PATTERN_RED_HEARTBEAT_FAST:
-            heartbeat(1, 0, 0, 2);
+            heartbeat(1, 0, 0, 3);
             break;
         case PATTERN_RAINBOW_SPACE:
             if(patternState == 0){

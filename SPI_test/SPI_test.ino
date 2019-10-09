@@ -43,15 +43,20 @@ void loop() {
       unsigned char value = atoi(commandString);
       Serial.print("Parsed number: ");
       Serial.println(value);
+      //digitalWrite(2, LOW);
+      //SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE3));
+      //SPI.transfer((unsigned char)commandChar);
+      //SPI.endTransaction();
+      //digitalWrite(2, HIGH);
+      //delayMicroseconds(5);
       digitalWrite(2, LOW);
-      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE3));
-      SPI.transfer((unsigned char)commandChar);
-      SPI.endTransaction();
+      SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE3));
+      SPI.transfer(value);
       digitalWrite(2, HIGH);
       delayMicroseconds(5);
       digitalWrite(2, LOW);
-      SPI.beginTransaction(SPISettings(4000000, MSBFIRST, SPI_MODE3));
-      SPI.transfer(value);
+      SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE3));
+      SPI.transfer(~value);
       SPI.endTransaction();
       digitalWrite(2, HIGH);
     }

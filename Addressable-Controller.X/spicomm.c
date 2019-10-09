@@ -22,6 +22,7 @@ void processSPIByte(unsigned char theByte){
             if((theByte ^ prospective_byte) == 0xff){
                 //Good message
                 pattern = prospective_byte;
+                patternState = 0;
                 SPIcomm_mode = SPICOMM_MODE_IDLE;
             }
             else{
@@ -45,10 +46,11 @@ void SPIinit(void){
     TRISBbits.TRISB5 = INPUT;
     TRISBbits.TRISB4 = INPUT;
     TRISBbits.TRISB1 = INPUT;
+    TRISBbits.TRISB2 = OUTPUT;
     SSP1CON3bits.BOEN = FALSE;
-    SSP1CON1bits.CKP = FALSE; //Clock idles low
-    SSP1STATbits.CKE = TRUE;
-    SSP1CON1bits.SSPM = 0b0101; //SPI Slave mode, clock = SCKx pin, SSx pin control enabled
+    SSP1CON1bits.CKP = TRUE; //Clock idles low
+    //SSP1STATbits.CKE = TRUE;
+    SSP1CON1bits.SSPM = 0b0100; //SPI Slave mode, clock = SCKx pin, SSx pin control enabled
     SSP1CON1bits.SSPEN = TRUE;
     PIE1bits.SSP1IE = TRUE;
 }
